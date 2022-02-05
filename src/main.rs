@@ -5,6 +5,7 @@ use serenity::framework::standard::{
     StandardFramework,
     macros::group,
 };
+use regex::RegexBuilder;
 
 use bottomify::bottom::{encode_string, decode_string};
 
@@ -43,13 +44,29 @@ fn translate(string: &String) -> String {
 impl EventHandler for Handler {
     async fn message(&self, ctx: Context, msg: Message) {
         for prefix in &self.config.prefixes {
-            if msg.content.to_lowercase() == prefix.to_lowercase() {
+            let matcher = RegexBuilder::new(format!("^{}", prefix).as_str()).case_insensitive(true)
+            .build().expect("Invalid regex");
+            if matcher.is_match_at(&msg.content, 0) {
+                #[allow(unused_assignments)]
+                let mut reply = String::new();
                 if let Some(rmsg) = &msg.referenced_message {
-                    let reply = translate(&rmsg.content);
-                    if let Err(why) = msg.reply(&ctx, reply).await {
-                        println!("Error sending message: {:?}", why);
+                    reply = translate(&rmsg.content);
+                } else {
+                    let mut input: String =  matcher.replace(&msg.content, "").to_string();
+                    if input.starts_with(" ") {
+                        input = input.strip_prefix(" ").unwrap().to_string();
                     }
+                    reply = translate(&input.to_string());
                 }
+                if reply.len() > 2000 {
+                    reply = "its too big!! it wont fit!".to_string()
+                } else if reply.is_empty() {
+                    reply = "uwu?".to_string()
+                }
+                if let Err(why) = msg.reply(&ctx, reply).await {
+                    println!("Error sending message: {:?}", why);
+                }
+                break;
             }
         }
     }
