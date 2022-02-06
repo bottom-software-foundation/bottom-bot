@@ -86,8 +86,11 @@ impl EventHandler for Handler {
                 for reply in &replies {
                     // If this is the first message in the list, send it as a reply
                     if reply == replies.get(0).unwrap() {
-                        if let Err(why) = msg.reply(&ctx, reply.iter().collect::<String>()).await {
-                            println!("Error sending message: {:?}", why);
+                        // Ensure message isn't empty. The second message should never be able to be null
+                        if !reply.is_empty() {
+                            if let Err(why) = msg.reply(&ctx, reply.iter().collect::<String>()).await {
+                                println!("Error sending message: {:?}", why);
+                            }
                         }
                     // Send the rest as messages in the channel, looks cleaner and avoids ping spam
                     } else {
