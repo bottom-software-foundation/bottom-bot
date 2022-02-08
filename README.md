@@ -1,4 +1,4 @@
-# Discord Kitten
+# Discord Bot-tom
 This is a Discord bot written in Rust to translate to and from [the Bottom Encoding Standard](https://github.com/bottom-software-foundation/spec) using [bottom-rs](https://github.com/bottom-software-foundation/bottom-rs) and [Serenity](https://github.com/serenity-rs/serenity).  
 
 ## Ever had this problem?
