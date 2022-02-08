@@ -23,6 +23,7 @@ struct Handler {
 impl Handler {
     pub fn new() -> Handler {
         let handler = Handler {
+            // Get config file
             config: Config::get(),
         };
         handler
@@ -47,6 +48,7 @@ fn translate(string: &String) -> String {
 impl EventHandler for Handler {
     // On message received
     async fn message(&self, ctx: Context, msg: Message) {
+        // Ensure message isn't own
         if !msg.is_own(&ctx).await {
             for prefix in &self.config.prefixes {
                 // Create regex matcher for the prefix
