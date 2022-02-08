@@ -32,7 +32,18 @@ impl Handler {
 
 fn translate(string: &String) -> String {
     // Attempt to decode bottomspec string
-    match decode_string(&string) {
+    match decode_string(&string.chars().filter(|&c|
+        // Filter characters, this should make the bot parse valid bottomspec even if it isn't the only thing in a message
+        c == '🫂'
+        || c == '💖'
+        || c == '✨'
+        || c == '🥺'
+        || c == '👉'
+        || c == '👈'
+        || c == ','
+        || c == '\u{2764}' // The two parts of the ❤️ null byte, which are two unicode code points
+        || c == '\u{fe0f}'
+    ).collect::<String>()) {
         // If it was decoded, return the decoded string
         Ok(out) => {
             return out;
