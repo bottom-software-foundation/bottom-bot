@@ -75,11 +75,23 @@ impl EventHandler for Handler {
     
                     // While the last message in the list is still over 2000 characters, split it 
                     while chars.len() > 2000 {
-                        // Append the left half of the message that was too long to the list
-                        replies.push(chars.split_at(2000).0.to_vec());
-                        // Modify chars as the remainder of the right side
-                        chars = chars.split_at(2000).1.to_vec();
+                        // Split after 2000 characters into the left and right parts of the message
+                        let (left, right) = chars.split_at(2000);
+                        // Get the position of the last 👈 character
+                        let pos = left.iter().rposition(|&r| r == '👈').unwrap() + 1;
+                        // Split the left part of the message to the last 👈 and the remainder
+                        // Ensuring the last character is always a 👈 makes sure no data is lost after splitting messages
+                        let (reply, remainder) = left.split_at(pos);
+                        // Push the message up until the 👈 to the to-send list
+                        replies.push(reply.to_vec());
+                        // Create a vector from the remainder
+                        let mut remainder = remainder.to_vec();
+                        // Append the leftover characters to the right of the 2000th character to the remainder
+                        remainder.append(&mut right.to_vec());
+                        // Overwrite what's left to do with the new remainder
+                        chars = remainder;
                     }
+
                     // Append the remainder
                     replies.push(chars);
     
