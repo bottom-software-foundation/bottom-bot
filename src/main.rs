@@ -113,6 +113,9 @@ impl EventHandler for Handler {
                                 println!("Error sending message: {:?}", why);
                             }
                         }
+                        if self.config.allow_overflow == false {
+                            break;
+                        }
                     }
                     // Break loop, prefix was found
                     break;

@@ -9,6 +9,7 @@ use serde::{Deserialize, Serialize};
 pub struct Config {
     pub bot_token: String,
     pub prefixes: Vec<String>,
+    pub allow_overflow: bool,
 }
 
 impl Default for Config {
@@ -23,6 +24,7 @@ impl Default for Config {
                 "I don't speak bottom".to_string(),
                 "I dont speak bottom".to_string(),
             ]),
+            allow_overflow: true,
         }
     }
 }
